@@ -1,6 +1,6 @@
 import 'dart:io';
-import 'dart:math';
 
+import 'package:csv/csv.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:excel/excel.dart' hide Border;
 import 'package:flutter/material.dart';
@@ -804,7 +804,7 @@ class _ParsedData extends StatelessWidget {
     required this.widthCoords,
   });
 
-  List<String> getParsedData(NotNullCellCoordSelection cellCoordSelection) {
+  List<String> _getParsedData(NotNullCellCoordSelection cellCoordSelection) {
     print("\n\n\n");
     print("------- getParsedData -------");
     final start = cellCoordSelection.start;
@@ -846,47 +846,99 @@ class _ParsedData extends StatelessWidget {
     return parsedData;
   }
 
+  List<List<T?>> transposeMatrix<T>(List<List<T?>> matrix) {
+    int rows = matrix.length;
+    int maxCols = 0;
+    for (int i = 0; i < rows; i++) {
+      if (matrix[i].length > maxCols) {
+        maxCols = matrix[i].length;
+      }
+    }
+
+    List<List<T?>> transposedMatrix = List.generate(maxCols, (_) => List<T?>.filled(rows, null));
+
+    for (int i = 0; i < rows; i++) {
+      for (int j = 0; j < matrix[i].length; j++) {
+        transposedMatrix[j][i] = matrix[i][j];
+      }
+    }
+
+    return transposedMatrix;
+  }
+
+  List<List<String?>> parseData(List<NotNullCellCoordSelection?> selections) {
+    final List<List<String>> parsedData = [];
+    for (final selection in selections) {
+      if (selection == null) {
+        parsedData.add([]);
+      } else {
+        parsedData.add(_getParsedData(selection));
+      }
+    }
+    final transposedMatrix = transposeMatrix(parsedData);
+    return transposedMatrix;
+  }
+
+  void saveFile(List<List<dynamic>?>? data) async {
+    String csvData = const ListToCsvConverter().convert(data, fieldDelimiter: ";");
+    final String path = (await getApplicationSupportDirectory()).path;
+    // final filePath = "$path/excel2maxcut-${DateTime.now()}.csv";
+    final filePath = "$path/export.csv";
+    print(filePath);
+    final File file = File(filePath);
+    await file.writeAsString(csvData);
+  }
+
   @override
   Widget build(BuildContext context) {
     final isNameCoordsValid = nameCoords.start != null && nameCoords.limit != null;
     final isQuantityCoordsValid = quantityCoords.start != null && quantityCoords.limit != null;
     final isHeightCoordsValid = heightCoords.start != null && heightCoords.limit != null;
     final isWidthCoordsValid = widthCoords.start != null && widthCoords.limit != null;
-    final nameParsed = isNameCoordsValid ? getParsedData(NotNullCellCoordSelection(nameCoords.start!, nameCoords.limit!)) : null;
-    final quantityParsed = isQuantityCoordsValid ? getParsedData(NotNullCellCoordSelection(quantityCoords.start!, quantityCoords.limit!)) : null;
-    final heightParsed = isHeightCoordsValid ? getParsedData(NotNullCellCoordSelection(heightCoords.start!, heightCoords.limit!)) : null;
-    final widthParsed = isWidthCoordsValid ? getParsedData(NotNullCellCoordSelection(widthCoords.start!, widthCoords.limit!)) : null;
-    final int maxRowsCount = [nameParsed, quantityParsed, heightParsed, widthParsed].whereType<List<String>>().map((e) => e.length).reduce(max);
-    final dataList = [nameParsed, quantityParsed, heightParsed, widthParsed];
-    return SingleChildScrollView(
-      child: Row(
-        children: List.generate(
-          dataList.length,
-          (rowIndex) {
-            final data = dataList[rowIndex];
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Column(
-                children: List.generate(
-                  maxRowsCount + 1,
-                  (colIndex) {
-                    if (colIndex == 0) {
-                      if (rowIndex == 0) return const Text("Name", style: TextStyle(fontWeight: FontWeight.bold));
-                      if (rowIndex == 1) return const Text("Quantity", style: TextStyle(fontWeight: FontWeight.bold));
-                      if (rowIndex == 2) return const Text("Height", style: TextStyle(fontWeight: FontWeight.bold));
-                      if (rowIndex == 3) return const Text("Width", style: TextStyle(fontWeight: FontWeight.bold));
-                    }
-                    String dataRow = "/";
-                    final fixedColIndex = colIndex - 1;
-                    if (data != null && data.length > fixedColIndex) dataRow = data[fixedColIndex];
-                    return Text(dataRow);
-                  },
-                ),
-              ),
-            );
-          },
+    //
+    final nameParsed = isNameCoordsValid ? NotNullCellCoordSelection(nameCoords.start!, nameCoords.limit!) : null;
+    final quantityParsed = isQuantityCoordsValid ? NotNullCellCoordSelection(quantityCoords.start!, quantityCoords.limit!) : null;
+    final heightParsed = isHeightCoordsValid ? NotNullCellCoordSelection(heightCoords.start!, heightCoords.limit!) : null;
+    final widthParsed = isWidthCoordsValid ? NotNullCellCoordSelection(widthCoords.start!, widthCoords.limit!) : null;
+    //
+    final dataList = parseData([nameParsed, quantityParsed, heightParsed, widthParsed]);
+    if (dataList.isEmpty) return const SizedBox.shrink();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextButton(
+          onPressed: () => saveFile(dataList),
+          child: const Text("Export"),
         ),
-      ),
+        SingleChildScrollView(
+          child: Row(
+            children: List.generate(
+              dataList.first.length, // They should be all equal thanks to the transposition
+              (rowIndex) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Column(
+                    children: List.generate(
+                      dataList.length + 1,
+                      (colIndex) {
+                        if (colIndex == 0) {
+                          if (rowIndex == 0) return const Text("Name", style: TextStyle(fontWeight: FontWeight.bold));
+                          if (rowIndex == 1) return const Text("Quantity", style: TextStyle(fontWeight: FontWeight.bold));
+                          if (rowIndex == 2) return const Text("Height", style: TextStyle(fontWeight: FontWeight.bold));
+                          if (rowIndex == 3) return const Text("Width", style: TextStyle(fontWeight: FontWeight.bold));
+                        }
+                        final fixedColIndex = colIndex - 1;
+                        String? data = dataList[fixedColIndex][rowIndex];
+                        return Text(data ?? "/");
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
