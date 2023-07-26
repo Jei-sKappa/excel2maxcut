@@ -44,4 +44,10 @@ app.*.map.json
 /android/app/release
 
 # Custom
+
+# Temp Folder
 *temp/*
+
+# Generated Dart Files
+*.g.dart
+*.freezed.dart
