@@ -1,114 +1,172 @@
 import '../../domain/cell_coord.dart';
-import '../../domain/cell_coord_selection.dart';
+import '../../presentation/viewmodel/config_type_viewmodel.dart';
 import '../datasource/prefs_datasource.dart';
+import '../mapper/prefs_mapper.dart';
 
 class PrefsRepository {
   final PrefsDataSource datasource;
 
   const PrefsRepository(this.datasource);
 
-  Future<CellCoordSelection> getNameCellIndex() async {
-    final int? row = await datasource.getNameCellRowIndex();
-    final int? col = await datasource.getNameCellColIndex();
-    final int? rowLimit = await datasource.getNameCellRowIndexLimit();
-    final int? colLimit = await datasource.getNameCellColIndexLimit();
-
-    CellCoord? start;
-    if (row != null && col != null) start = CellCoord(row, col);
-    CellCoord? limit;
-    if (rowLimit != null && colLimit != null) limit = CellCoord(rowLimit, colLimit);
-    return CellCoordSelection(start, limit);
+  Future<CellCoord?> get(ConfigType configType){
+    switch (configType) {
+      case ConfigType.name:
+        return _getStartNameCoord();
+      case ConfigType.nameLimit:
+        return _getLimitNameCoord();
+      case ConfigType.quantity:
+        return _getStartQuantityCoord();
+      case ConfigType.quantityLimit:
+        return _getLimitQuantityCoord();
+      case ConfigType.height:
+        return _getStartHeightCoord();
+      case ConfigType.heightLimit:
+        return _getLimitHeightCoord();
+      case ConfigType.width:
+        return _getStartWidthCellIndex();
+      case ConfigType.widthLimit:
+        return _getLimitWidthCellIndex();
+    }
   }
 
-  Future<bool> setNameCellIndex({CellCoord? start, CellCoord? limit}) async {
-    assert(start != null || limit != null);
-    bool startUpdateResponse = true;
-    bool limitUpdateResponse = true;
-    if (start != null) {
-      startUpdateResponse = await datasource.setNameCellRowIndex(start.row) && await datasource.setNameCellColIndex(start.col);
+  Future<bool> set(ConfigType configType, CellCoord coord) {
+    switch (configType) {
+      case ConfigType.name:
+        return _setStartNameCellIndex(coord);
+      case ConfigType.nameLimit:
+        return _setLimitNameCellIndex(coord);
+      case ConfigType.quantity:
+        return _setStartQuantityCellIndex(coord);
+      case ConfigType.quantityLimit:
+        return _setLimitQuantityCellIndex(coord);
+      case ConfigType.height:
+        return _setStartHeightCellIndex(coord);
+      case ConfigType.heightLimit:
+        return _setLimitHeightCellIndex(coord);
+      case ConfigType.width:
+        return _setStartWidthCellIndex(coord);
+      case ConfigType.widthLimit:
+        return _setLimitWidthCellIndex(coord);
     }
-    if (limit != null) {
-      limitUpdateResponse = await datasource.setNameCellRowIndexLimit(limit.row) && await datasource.setNameCellColIndexLimit(limit.col);
-    }
-
-    return startUpdateResponse && limitUpdateResponse;
   }
 
-  Future<CellCoordSelection> getQuantityCellIndex() async {
-    final int? row = await datasource.getQuantityCellRowIndex();
-    final int? col = await datasource.getQuantityCellColIndex();
-    final int? rowLimit = await datasource.getQuantityCellRowIndexLimit();
-    final int? colLimit = await datasource.getQuantityCellColIndexLimit();
+  Future<CellCoord?> _getStartNameCoord() async {
+    final row = await datasource.getNameCellRowIndex();
+    final col = await datasource.getNameCellColIndex();
+    if (row == null || col == null) return null;
 
-    CellCoord? start;
-    if (row != null && col != null) start = CellCoord(row, col);
-    CellCoord? limit;
-    if (rowLimit != null && colLimit != null) limit = CellCoord(rowLimit, colLimit);
-    return CellCoordSelection(start, limit);
+    return PrefsMapper.toModel((row, col));
   }
 
-  Future<bool> setQuantityCellIndex({CellCoord? start, CellCoord? limit}) async {
-    assert(start != null || limit != null);
-    bool startUpdateResponse = true;
-    bool limitUpdateResponse = true;
-    if (start != null) {
-      startUpdateResponse = await datasource.setQuantityCellRowIndex(start.row) && await datasource.setQuantityCellColIndex(start.col);
-    }
-    if (limit != null) {
-      limitUpdateResponse = await datasource.setQuantityCellRowIndexLimit(limit.row) && await datasource.setQuantityCellColIndexLimit(limit.col);
-    }
-    return startUpdateResponse && limitUpdateResponse;
+  Future<bool> _setStartNameCellIndex(CellCoord coord) async {
+    final rowResponse = await datasource.setNameCellRowIndex(coord.row);
+    final colResponse = await datasource.setNameCellColIndex(coord.col);
+
+    return rowResponse && colResponse;
   }
 
-  Future<CellCoordSelection> getHeightCellIndex() async {
-    final int? row = await datasource.getHeightCellRowIndex();
-    final int? col = await datasource.getHeightCellColIndex();
-    final int? rowLimit = await datasource.getHeightCellRowIndexLimit();
-    final int? colLimit = await datasource.getHeightCellColIndexLimit();
+  Future<CellCoord?> _getLimitNameCoord() async {
+    final row = await datasource.getNameCellRowIndexLimit();
+    final col = await datasource.getNameCellColIndexLimit();
+    if (row == null || col == null) return null;
 
-    CellCoord? start;
-    if (row != null && col != null) start = CellCoord(row, col);
-    CellCoord? limit;
-    if (rowLimit != null && colLimit != null) limit = CellCoord(rowLimit, colLimit);
-    return CellCoordSelection(start, limit);
+    return PrefsMapper.toModel((row, col));
   }
 
-  Future<bool> setHeightCellIndex({CellCoord? start, CellCoord? limit}) async {
-    assert(start != null || limit != null);
-    bool startUpdateResponse = true;
-    bool limitUpdateResponse = true;
-    if (start != null) {
-      startUpdateResponse = await datasource.setHeightCellRowIndex(start.row) && await datasource.setHeightCellColIndex(start.col);
-    }
-    if (limit != null) {
-      limitUpdateResponse = await datasource.setHeightCellRowIndexLimit(limit.row) && await datasource.setHeightCellColIndexLimit(limit.col);
-    }
-    return startUpdateResponse && limitUpdateResponse;
+  Future<bool> _setLimitNameCellIndex(CellCoord coord) async {
+    final rowResponse = await datasource.setNameCellRowIndexLimit(coord.row);
+    final colResponse = await datasource.setNameCellColIndexLimit(coord.col);
+
+    return rowResponse && colResponse;
   }
 
-  Future<CellCoordSelection> getWidthCellIndex() async {
-    final int? row = await datasource.getWidthCellRowIndex();
-    final int? col = await datasource.getWidthCellColIndex();
-    final int? rowLimit = await datasource.getWidthCellRowIndexLimit();
-    final int? colLimit = await datasource.getWidthCellColIndexLimit();
+  Future<CellCoord?> _getStartQuantityCoord() async {
+    final row = await datasource.getQuantityCellRowIndex();
+    final col = await datasource.getQuantityCellColIndex();
+    if (row == null || col == null) return null;
 
-    CellCoord? start;
-    if (row != null && col != null) start = CellCoord(row, col);
-    CellCoord? limit;
-    if (rowLimit != null && colLimit != null) limit = CellCoord(rowLimit, colLimit);
-    return CellCoordSelection(start, limit);
+    return PrefsMapper.toModel((row, col));
   }
 
-  Future<bool> setWidthCellIndex({CellCoord? start, CellCoord? limit}) async {
-    assert(start != null || limit != null);
-    bool startUpdateResponse = true;
-    bool limitUpdateResponse = true;
-    if (start != null) {
-      startUpdateResponse = await datasource.setWidthCellRowIndex(start.row) && await datasource.setWidthCellColIndex(start.col);
-    }
-    if (limit != null) {
-      limitUpdateResponse = await datasource.setWidthCellRowIndexLimit(limit.row) && await datasource.setWidthCellColIndexLimit(limit.col);
-    }
-    return startUpdateResponse && limitUpdateResponse;
+  Future<bool> _setStartQuantityCellIndex(CellCoord coord) async {
+    final rowResponse = await datasource.setQuantityCellRowIndex(coord.row);
+    final colResponse = await datasource.setQuantityCellColIndex(coord.col);
+
+    return rowResponse && colResponse;
+  }
+
+  Future<CellCoord?> _getLimitQuantityCoord() async {
+    final row = await datasource.getQuantityCellRowIndexLimit();
+    final col = await datasource.getQuantityCellColIndexLimit();
+    if (row == null || col == null) return null;
+
+    return PrefsMapper.toModel((row, col));
+  }
+
+  Future<bool> _setLimitQuantityCellIndex(CellCoord coord) async {
+    final rowResponse = await datasource.setQuantityCellRowIndexLimit(coord.row);
+    final colResponse = await datasource.setQuantityCellColIndexLimit(coord.col);
+
+    return rowResponse && colResponse;
+  }
+
+  Future<CellCoord?> _getStartHeightCoord() async {
+    final row = await datasource.getHeightCellRowIndex();
+    final col = await datasource.getHeightCellColIndex();
+    if (row == null || col == null) return null;
+
+    return PrefsMapper.toModel((row, col));
+  }
+
+  Future<bool> _setStartHeightCellIndex(CellCoord coord) async {
+    final rowResponse = await datasource.setHeightCellRowIndex(coord.row);
+    final colResponse = await datasource.setHeightCellColIndex(coord.col);
+
+    return rowResponse && colResponse;
+  }
+
+  Future<CellCoord?> _getLimitHeightCoord() async {
+    final row = await datasource.getHeightCellRowIndexLimit();
+    final col = await datasource.getHeightCellColIndexLimit();
+    if (row == null || col == null) return null;
+
+    return PrefsMapper.toModel((row, col));
+  }
+
+  Future<bool> _setLimitHeightCellIndex(CellCoord coord) async {
+    final rowResponse = await datasource.setHeightCellRowIndexLimit(coord.row);
+    final colResponse = await datasource.setHeightCellColIndexLimit(coord.col);
+
+    return rowResponse && colResponse;
+  }
+
+  Future<CellCoord?> _getStartWidthCellIndex() async {
+    final row = await datasource.getWidthCellRowIndex();
+    final col = await datasource.getWidthCellColIndex();
+    if (row == null || col == null) return null;
+
+    return PrefsMapper.toModel((row, col));
+  }
+
+  Future<bool> _setStartWidthCellIndex(CellCoord coord) async {
+    final rowResponse = await datasource.setWidthCellRowIndex(coord.row);
+    final colResponse = await datasource.setWidthCellColIndex(coord.col);
+
+    return rowResponse && colResponse;
+  }
+
+  Future<CellCoord?> _getLimitWidthCellIndex() async {
+    final row = await datasource.getWidthCellRowIndexLimit();
+    final col = await datasource.getWidthCellColIndexLimit();
+    if (row == null || col == null) return null;
+
+    return PrefsMapper.toModel((row, col));
+  }
+
+  Future<bool> _setLimitWidthCellIndex(CellCoord coord) async {
+    final rowResponse = await datasource.setWidthCellRowIndexLimit(coord.row);
+    final colResponse = await datasource.setWidthCellColIndexLimit(coord.col);
+
+    return rowResponse && colResponse;
   }
 }

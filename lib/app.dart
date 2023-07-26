@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'presentation/view/home_page_view.dart';
+import 'presentation/view/skeleton_view.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -15,7 +15,7 @@ class App extends StatelessWidget {
       darkTheme: ThemeData.dark(
         useMaterial3: true,
       ),
-      home: const HomePage(),
+      home: const SkeletonView(),
     );
   }
 }
