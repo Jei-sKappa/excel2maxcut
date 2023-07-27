@@ -21,9 +21,9 @@ class SaveFileButton extends ConsumerWidget {
           color: Colors.red,
         ),
       ),
-      success: (maxCutData) => TextButton(
+      success: (_) => TextButton(
         onPressed: () async {
-          final response = await maxCutDataViewModel.saveFile(maxCutData);
+          final response = await maxCutDataViewModel.saveFile();
           late String message;
           if (response == false) {
             message = "Error: File not saved";

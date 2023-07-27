@@ -31,6 +31,69 @@ class MaxCutDataViewModel extends _$MaxCutDataViewModel {
     return const State.init();
   }
 
+  Future _parse() async {
+    final sheet = ref.watch(sheetViewModelProvider);
+    debugPrint("Try Parsing...");
+
+    //TODO: Handle Exception (for example in repository inside _getCoordsTuple)
+    // final sheet = ref.watch(sheetViewModelProvider);
+    if (sheet == null) {
+      debugPrint("Undo Parsing: Sheet is null");
+      const State.init();
+      return;
+    }
+
+    debugPrint("Parsing sheet ${sheet.sheetName}...");
+    state = const State.loading();
+    await Future.delayed(const Duration(seconds: 1));
+
+    final coordsTuple = await _getCoordsTuple();
+    final selections = _convertActionTupleToCellSelection(coordsTuple);
+    final parsedData = _parseAllAppData(sheet, selections);
+    final maxCutObjects = _convertToMaxCut(parsedData);
+    final MaxCutResult result = MaxCutResult(maxCutObjects);
+
+    // print("Parsed data: ${result.dump()}");
+    state = State.success(result);
+  }
+
+  Future<bool> saveFile() async {
+    final result = state.data;
+    if (result == null) {
+      return false;
+    }
+
+    String csvData = result.dump();
+    print(csvData);
+    final String path = (await getApplicationSupportDirectory()).path;
+    // final filePath = "$path/excel2maxcut-${DateTime.now()}.csv";
+    final filePath = "$path/export.csv";
+    print(filePath);
+    final File file = File(filePath);
+    final savedFile = await file.writeAsString(csvData);
+    if (!(await savedFile.exists())) {
+      return false;
+    }
+
+    return true;
+  }
+
+  bool customizeData(MaxCutData newData, MaxCutDataType dataType, int objectIndex){
+    final result = state.data;
+    if (result == null) {
+      return false;
+    }
+
+    if(objectIndex < 0 || objectIndex >= result.objects.length){
+      return false;
+    }
+
+    result.objects[objectIndex][dataType] = newData;
+    state = State.success(result);
+
+    return true;
+  }
+
   /// {"CoordTitle": ("CoordStart", "CoordLimit"), ...}
   Future<List<ConfigTypeActionTuple<CellCoord?>>> _getCoordsTuple() async {
     final repository = ref.read(prefsRepositoryProvider);
@@ -59,32 +122,6 @@ class MaxCutDataViewModel extends _$MaxCutDataViewModel {
     }
 
     return cellSelections;
-  }
-
-  Future _parse() async {
-    final sheet = ref.watch(sheetViewModelProvider);
-    debugPrint("Try Parsing...");
-
-    //TODO: Handle Exception (for example in repository inside _getCoordsTuple)
-    // final sheet = ref.watch(sheetViewModelProvider);
-    if (sheet == null) {
-      debugPrint("Undo Parsing: Sheet is null");
-      const State.init();
-      return;
-    }
-
-    debugPrint("Parsing sheet ${sheet.sheetName}...");
-    state = const State.loading();
-    await Future.delayed(const Duration(seconds: 1));
-
-    final coordsTuple = await _getCoordsTuple();
-    final selections = _convertActionTupleToCellSelection(coordsTuple);
-    final parsedData = _parseAllAppData(sheet, selections);
-    final maxCutObjects = _convertToMaxCut(parsedData);
-    final MaxCutResult result = MaxCutResult(maxCutObjects);
-
-    // print("Parsed data: ${result.dump()}");
-    state = State.success(result);
   }
 
   /// Input: ExcelSheet, CellSelection
@@ -200,25 +237,4 @@ class MaxCutDataViewModel extends _$MaxCutDataViewModel {
 
     return objects;
   }
-
-  Future<bool> saveFile(MaxCutResult result) async {
-    // final result = state.data;
-    // if (result == null) {
-    //   return false;
-    // }
-
-    String csvData = result.dump();
-    print(csvData);
-    final String path = (await getApplicationSupportDirectory()).path;
-    // final filePath = "$path/excel2maxcut-${DateTime.now()}.csv";
-    final filePath = "$path/export.csv";
-    print(filePath);
-    final File file = File(filePath);
-    final savedFile = await file.writeAsString(csvData);
-    if (!(await savedFile.exists())) {
-      return false;
-    }
-
-    return true;
-  }  
 }
