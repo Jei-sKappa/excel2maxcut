@@ -45,7 +45,7 @@ enum MaxCutDataType {
 }
 
 extension MaxCutDataTypeExtension on MaxCutDataType {
-  MaxCutData get fieldName {
+  String get fieldName {
     switch (this) {
       case MaxCutDataType.tipo:
         return "Tipo";
@@ -125,6 +125,87 @@ extension MaxCutDataTypeExtension on MaxCutDataType {
         return "Short Expansion";
     }
   }
+
+  String? get defaultValue {
+    switch (this) {
+      case MaxCutDataType.tipo:
+        return "Input Panel";
+      case MaxCutDataType.nome:
+        return null;
+      case MaxCutDataType.lunghezza:
+        return null;
+      case MaxCutDataType.larghezza:
+        return null;
+      case MaxCutDataType.quantita:
+        return null;
+      case MaxCutDataType.note:
+        return null;
+      case MaxCutDataType.puoRuotare:
+        return "IfNoGrain";
+      case MaxCutDataType.materiale:
+        return "2000x1000";
+      case MaxCutDataType.bordaturaLunghezza1:
+        return null;
+      case MaxCutDataType.bordaturaLunghezza2:
+        return null;
+      case MaxCutDataType.larghezzaBordo1:
+        return null;
+      case MaxCutDataType.bordaturaLarghezza2:
+        return null;
+      case MaxCutDataType.includiSpessoreBordatura:
+        return "False";
+      case MaxCutDataType.nota1:
+        return null;
+      case MaxCutDataType.nota2:
+        return null;
+      case MaxCutDataType.nota3:
+        return null;
+      case MaxCutDataType.nota4:
+        return null;
+      case MaxCutDataType.raggruppa:
+        return null;
+      case MaxCutDataType.tagReport:
+        return null;
+      case MaxCutDataType.importId:
+        return null;
+      case MaxCutDataType.idPadre:
+        return null;
+      case MaxCutDataType.nomeOggettoLibreria:
+        return null;
+      case MaxCutDataType.lunghezzaFori1:
+        return null;
+      case MaxCutDataType.lunghezzaFori2:
+        return null;
+      case MaxCutDataType.larghezzaFori1:
+        return null;
+      case MaxCutDataType.larghezzaFori2:
+        return null;
+      case MaxCutDataType.lunghezzaScanalatura1:
+        return null;
+      case MaxCutDataType.lunghezzaScanalatura2:
+        return null;
+      case MaxCutDataType.larghezzaScanalatura1:
+        return null;
+      case MaxCutDataType.larghezzaScanalatura2:
+        return null;
+      case MaxCutDataType.selezionaIMaterialiDaSostituire:
+        return null;
+      case MaxCutDataType.edgingLength1Tag:
+        return null;
+      case MaxCutDataType.edgingLength2Tag:
+        return null;
+      case MaxCutDataType.edgingWidth1Tag:
+        return null;
+      case MaxCutDataType.edgingWidth2Tag:
+        return null;
+      case MaxCutDataType.applyMachiningCharge:
+        return null;
+      case MaxCutDataType.longExpansion:
+        return "0";
+      case MaxCutDataType.shortExpansion:
+        return "0";
+    }
+  }
 }
 
 /// Example
@@ -150,7 +231,7 @@ class MaxCutResult {
     String res = "";
     for (final dataType in MaxCutDataType.values) {
       // Actual value inside Excel cell
-      final String typeValue = object[dataType] ?? "/";
+      final String typeValue = object[dataType] ?? dataType.defaultValue ?? "/";
       res += '"$typeValue"$sep';
     }
     return res;
