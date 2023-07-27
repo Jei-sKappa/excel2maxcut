@@ -14,12 +14,12 @@ part 'skeleton_viewmodel.g.dart';
 class SkeletonViewModel extends _$SkeletonViewModel {
   @override
   State<Excel> build() {
-    getFile(); // TODO: Remove
+    // getFile(); // TODO: Remove
     return const State.init();
   }
 
   Future<File?> _getExcelFileFromLocalAppMemory() async {
-    const filePath = "file.xlsx";
+    const filePath = "SCHEDA_DI_LAVORO_2023_GD.xlsx";
     final path = await getApplicationDocumentsDirectory();
     final file = File('${path.path}/$filePath');
     if (!(await file.exists())) return null;
@@ -29,6 +29,7 @@ class SkeletonViewModel extends _$SkeletonViewModel {
 
   void getFile() async {
     state = const State.loading();
+    await Future.delayed(const Duration(seconds: 1));
 
     Excel? excel;
 
@@ -42,7 +43,7 @@ class SkeletonViewModel extends _$SkeletonViewModel {
       );
       if (filePickerResult != null) {
         debugPrint("File picked: ${filePickerResult.files.first.path}");
-        excel = _decodeExcelPlatformFile(filePickerResult.files.first);
+        excel = await _decodeExcelPlatformFile(filePickerResult.files.first);
       }
     } else {
       debugPrint("Local File picked: ${localFile.path}");
@@ -57,15 +58,22 @@ class SkeletonViewModel extends _$SkeletonViewModel {
     }
   }
 
-  Excel? _decodeExcelPlatformFile(PlatformFile file) {
+  Excel _decodeFile(List<int> data) {
+    return Excel.decodeBytes(data);
+  }
+
+
+  Future<Excel?> _decodeExcelPlatformFile(PlatformFile file) async {
     final bytes = file.bytes;
     if (bytes == null) return null;
 
-    return Excel.decodeBytes(bytes);
+    final excel = _decodeFile(bytes);
+    return excel;
   }
 
   Future<Excel> _decodeExcelFile(File file) async {
     final bytes = await file.readAsBytes();
-    return Excel.decodeBytes(bytes);
+    final excel = _decodeFile(bytes);
+    return excel;
   }
 }
