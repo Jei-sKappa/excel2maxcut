@@ -6,8 +6,6 @@ import '../viewmodel/maxcut_data_viewmodel.dart';
 class SaveFileButton extends ConsumerWidget {
   const SaveFileButton({super.key});
 
-  voidonSavedButtonPressed() {}
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final maxCutDataViewModel = ref.watch(maxCutDataViewModelProvider.notifier);

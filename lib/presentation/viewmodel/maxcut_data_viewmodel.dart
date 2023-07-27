@@ -78,13 +78,13 @@ class MaxCutDataViewModel extends _$MaxCutDataViewModel {
     return true;
   }
 
-  bool customizeData(MaxCutData newData, MaxCutDataType dataType, int objectIndex){
+  bool customizeData(MaxCutData newData, MaxCutDataType dataType, int objectIndex) {
     final result = state.data;
     if (result == null) {
       return false;
     }
 
-    if(objectIndex < 0 || objectIndex >= result.objects.length){
+    if (objectIndex < 0 || objectIndex >= result.objects.length) {
       return false;
     }
 
