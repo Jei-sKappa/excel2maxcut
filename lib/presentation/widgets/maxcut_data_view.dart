@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/widgets/loading_widget.dart';
+import '../../core/widgets/text_editing_view.dart';
 import '../../domain/maxcutdata.dart';
 import '../viewmodel/maxcut_data_viewmodel.dart';
 
@@ -41,7 +42,7 @@ class MaxCutDataView extends ConsumerWidget {
                           final fixedColIndex = colIndex - 1;
                           final maxCutObject = maxCutObjects[fixedColIndex];
                           final data = maxCutObject[maxCutDataType];
-                          return MaxDataCell(
+                          return _MaxDataCell(
                             data: data,
                             maxDataObjectIndex: fixedColIndex,
                             dataType: maxCutDataType,
@@ -60,7 +61,7 @@ class MaxCutDataView extends ConsumerWidget {
   }
 }
 
-class MaxDataCell extends ConsumerWidget {
+class _MaxDataCell extends ConsumerWidget {
   final MaxCutData? data;
 
   /// The Index of the data object (in the list of data objects) that refers to this cell
@@ -68,7 +69,7 @@ class MaxDataCell extends ConsumerWidget {
 
   final MaxCutDataType dataType;
 
-  const MaxDataCell({
+  const _MaxDataCell({
     required this.data,
     required this.maxDataObjectIndex,
     required this.dataType,
@@ -117,83 +118,6 @@ class MaxDataCell extends ConsumerWidget {
       ),
       onPressed: () => showEditingDialog(context, ref, data, maxDataObjectIndex, dataType),
       child: Text(data ?? "/"),
-    );
-  }
-}
-
-class TextEditingView extends StatefulWidget {
-  final String text;
-  final bool showPrevious;
-  final void Function(String) onSubmitted;
-  const TextEditingView(
-    this.text, {
-    this.showPrevious = true,
-    required this.onSubmitted,
-    super.key,
-  });
-
-  @override
-  State<TextEditingView> createState() => _TextEditingViewState();
-}
-
-class _TextEditingViewState extends State<TextEditingView> {
-  late final TextEditingController controller;
-
-  @override
-  void initState() {
-    controller = TextEditingController(text: widget.text);
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "Edit Text",
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              if (widget.showPrevious && widget.text != "")
-                Text(
-                  'Previous: "${widget.text}"',
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-            ],
-          ),
-          Expanded(
-            child: Center(
-              child: TextField(
-                controller: controller,
-                onEditingComplete: () => widget.onSubmitted(controller.text.trim()),
-                style: const TextStyle(fontSize: 18),
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
-                  labelText: 'Enter new value',
-                  filled: true,
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
