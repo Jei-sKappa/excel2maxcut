@@ -1,9 +1,9 @@
-import 'dart:io';
+// import 'dart:io';
 
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
-import 'package:path_provider/path_provider.dart';
+// import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../state/state.dart';
@@ -17,14 +17,14 @@ class ExcelViewModel extends _$ExcelViewModel {
     return const State.init();
   }
 
-  Future<File?> _getExcelFileFromLocalAppMemory() async {
-    const filePath = "SCHEDA_DI_LAVORO_2023_GD.xlsx";
-    final path = await getApplicationDocumentsDirectory();
-    final file = File('${path.path}/$filePath');
-    if (!(await file.exists())) return null;
+  // Future<File?> _getExcelFileFromLocalAppMemory() async {
+  //   const filePath = "SCHEDA_DI_LAVORO_2023_GD.xlsx";
+  //   final path = await getApplicationDocumentsDirectory();
+  //   final file = File('${path.path}/$filePath');
+  //   if (!(await file.exists())) return null;
 
-    return file;
-  }
+  //   return file;
+  // }
 
   void getFile() async {
     state = const State.loading();
@@ -32,22 +32,22 @@ class ExcelViewModel extends _$ExcelViewModel {
 
     Excel? excel;
 
-    final localFile = await _getExcelFileFromLocalAppMemory();
-    if (localFile == null) {
-      // Try with File picker
-      FilePickerResult? filePickerResult = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['xlsx'],
-        withData: true,
-      );
-      if (filePickerResult != null) {
-        debugPrint("File picked: ${filePickerResult.files.first.path}");
-        excel = await _decodeExcelPlatformFile(filePickerResult.files.first);
-      }
-    } else {
-      debugPrint("Local File picked: ${localFile.path}");
-      excel = await _decodeExcelFile(localFile);
+    // final localFile = await _getExcelFileFromLocalAppMemory();
+    // if (localFile == null) {
+    //   // Try with File picker
+    FilePickerResult? filePickerResult = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['xlsx'],
+      withData: true,
+    );
+    if (filePickerResult != null) {
+      debugPrint("File picked: ${filePickerResult.files.first.path}");
+      excel = await _decodeExcelPlatformFile(filePickerResult.files.first);
     }
+    // } else {
+    //   debugPrint("Local File picked: ${localFile.path}");
+    //   excel = await _decodeExcelFile(localFile);
+    // }
 
     if (excel != null) {
       debugPrint("Excel decoded");
@@ -61,7 +61,6 @@ class ExcelViewModel extends _$ExcelViewModel {
     return Excel.decodeBytes(data);
   }
 
-
   Future<Excel?> _decodeExcelPlatformFile(PlatformFile file) async {
     final bytes = file.bytes;
     if (bytes == null) return null;
@@ -70,9 +69,9 @@ class ExcelViewModel extends _$ExcelViewModel {
     return excel;
   }
 
-  Future<Excel> _decodeExcelFile(File file) async {
-    final bytes = await file.readAsBytes();
-    final excel = _decodeFile(bytes);
-    return excel;
-  }
+  // Future<Excel> _decodeExcelFile(File file) async {
+  //   final bytes = await file.readAsBytes();
+  //   final excel = _decodeFile(bytes);
+  //   return excel;
+  // }
 }
