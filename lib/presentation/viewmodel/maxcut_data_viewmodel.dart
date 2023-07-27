@@ -1,8 +1,5 @@
-import 'dart:io';
-
 import 'package:excel/excel.dart';
 import 'package:flutter/foundation.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../data/data_module.dart';
@@ -55,27 +52,6 @@ class MaxCutDataViewModel extends _$MaxCutDataViewModel {
 
     // print("Parsed data: ${result.dump()}");
     state = State.success(result);
-  }
-
-  Future<bool> saveFile() async {
-    final result = state.data;
-    if (result == null) {
-      return false;
-    }
-
-    String csvData = result.dump();
-    debugPrint(csvData);
-    final String path = (await getApplicationSupportDirectory()).path;
-    // final filePath = "$path/excel2maxcut-${DateTime.now()}.csv";
-    final filePath = "$path/export.csv";
-    debugPrint(filePath);
-    final File file = File(filePath);
-    final savedFile = await file.writeAsString(csvData);
-    if (!(await savedFile.exists())) {
-      return false;
-    }
-
-    return true;
   }
 
   bool customizeData(MaxCutData newData, MaxCutDataType dataType, int objectIndex) {

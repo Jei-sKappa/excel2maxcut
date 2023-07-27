@@ -1,8 +1,7 @@
 import 'dart:io';
 
 import 'package:excel2maxcut/domain/maxcutdata.dart';
-import 'package:flutter/foundation.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../providers/all_max_cut_result_provider.dart';
@@ -15,6 +14,21 @@ class SaveFileButtonViewModel extends _$SaveFileButtonViewModel {
   @override
   State build() => const State.init();
 
+  Future<String?> _getSavePath(String fileName) async {
+    final FileSaveLocation? result = await getSaveLocation(
+      suggestedName: fileName,
+      acceptedTypeGroups: [
+        const XTypeGroup(
+          label: 'csv',
+          extensions: ['csv'],
+          mimeTypes: ['text/csv'],
+        ),
+      ],
+    );
+
+    return result?.path;
+  }
+
   Future saveFile() async {
     state = const State.loading();
 
@@ -26,12 +40,15 @@ class SaveFileButtonViewModel extends _$SaveFileButtonViewModel {
 
     String csvData = MaxCutResult.dumpAll(results);
 
-    final String path = (await getApplicationSupportDirectory()).path;
-    // final filePath = "$path/excel2maxcut-${DateTime.now()}.csv";
-    final filePath = "$path/export.csv";
-    debugPrint(filePath);
+    //TODO: Should set default file name to the first excel file name
+    String fileName = "export.csv";
+    final String? path = await _getSavePath(fileName);
+    if (path == null) {
+      state = State.error(Exception("Canceled"));
+      return;
+    }
 
-    final File file = File(filePath);
+    final File file = File(path);
     final savedFile = await file.writeAsString(csvData);
     if (!(await savedFile.exists())) {
       state = State.error(Exception("Error while saving file"));
