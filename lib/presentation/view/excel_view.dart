@@ -19,7 +19,6 @@ class ExcelView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("ExcelView.build $index");
     return Consumer(
       builder: (context, ref, child) {
         final viewModel = ref.read(excelViewModelProvider(index).notifier);

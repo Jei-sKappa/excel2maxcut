@@ -64,11 +64,11 @@ class MaxCutDataViewModel extends _$MaxCutDataViewModel {
     }
 
     String csvData = result.dump();
-    print(csvData);
+    debugPrint(csvData);
     final String path = (await getApplicationSupportDirectory()).path;
     // final filePath = "$path/excel2maxcut-${DateTime.now()}.csv";
     final filePath = "$path/export.csv";
-    print(filePath);
+    debugPrint(filePath);
     final File file = File(filePath);
     final savedFile = await file.writeAsString(csvData);
     if (!(await savedFile.exists())) {
@@ -177,7 +177,7 @@ class MaxCutDataViewModel extends _$MaxCutDataViewModel {
       final type = typedSelection.$1;
       final selection = typedSelection.$2;
       if (selection == null) {
-        parsedAllTypesData.add((type, [])); //TODO: Test this case
+        parsedAllTypesData.add((type, []));
       } else {
         final parsedDasta = _parseAppData(sheet, selection);
         parsedAllTypesData.add((type, parsedDasta));
