@@ -141,10 +141,15 @@ class MaxCutDataViewModel extends _$MaxCutDataViewModel {
 
     for (int movingIndex = cellSelection.from; movingIndex <= cellSelection.to; movingIndex++) {
       late final Data? cell;
-      if (cellSelection.isVertical) {
-        cell = sheetRows[movingIndex][fixedIndex];
-      } else {
-        cell = sheetRows[fixedIndex][movingIndex];
+      try {
+        if (cellSelection.isVertical) {
+          cell = sheetRows[movingIndex][fixedIndex];
+        } else {
+          cell = sheetRows[fixedIndex][movingIndex];
+        }
+      } on RangeError catch (e) {
+        debugPrint("Caught RangeError: $e");
+        continue;
       }
 
       if (cell == null || cell.isFormula) continue;
