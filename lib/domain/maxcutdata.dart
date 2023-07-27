@@ -206,6 +206,90 @@ extension MaxCutDataTypeExtension on MaxCutDataType {
         return "0";
     }
   }
+
+  //TODO: Those value should be taken from the user preferences
+  // cause in this case for example we take for granted that the user does not
+  // insert "  mm" after lunghezza and larghezza but maybe he already does in its excel file
+  String get appendValue {
+    switch (this) {
+      case MaxCutDataType.tipo:
+        return "";
+      case MaxCutDataType.nome:
+        return "";
+      case MaxCutDataType.lunghezza:
+        return " mm";
+      case MaxCutDataType.larghezza:
+        return " mm";
+      case MaxCutDataType.quantita:
+        return "";
+      case MaxCutDataType.note:
+        return "";
+      case MaxCutDataType.puoRuotare:
+        return "";
+      case MaxCutDataType.materiale:
+        return "";
+      case MaxCutDataType.bordaturaLunghezza1:
+        return "";
+      case MaxCutDataType.bordaturaLunghezza2:
+        return "";
+      case MaxCutDataType.larghezzaBordo1:
+        return "";
+      case MaxCutDataType.bordaturaLarghezza2:
+        return "";
+      case MaxCutDataType.includiSpessoreBordatura:
+        return "";
+      case MaxCutDataType.nota1:
+        return "";
+      case MaxCutDataType.nota2:
+        return "";
+      case MaxCutDataType.nota3:
+        return "";
+      case MaxCutDataType.nota4:
+        return "";
+      case MaxCutDataType.raggruppa:
+        return "";
+      case MaxCutDataType.tagReport:
+        return "";
+      case MaxCutDataType.importId:
+        return "";
+      case MaxCutDataType.idPadre:
+        return "";
+      case MaxCutDataType.nomeOggettoLibreria:
+        return "";
+      case MaxCutDataType.lunghezzaFori1:
+        return "";
+      case MaxCutDataType.lunghezzaFori2:
+        return "";
+      case MaxCutDataType.larghezzaFori1:
+        return "";
+      case MaxCutDataType.larghezzaFori2:
+        return "";
+      case MaxCutDataType.lunghezzaScanalatura1:
+        return "";
+      case MaxCutDataType.lunghezzaScanalatura2:
+        return "";
+      case MaxCutDataType.larghezzaScanalatura1:
+        return "";
+      case MaxCutDataType.larghezzaScanalatura2:
+        return "";
+      case MaxCutDataType.selezionaIMaterialiDaSostituire:
+        return "";
+      case MaxCutDataType.edgingLength1Tag:
+        return "";
+      case MaxCutDataType.edgingLength2Tag:
+        return "";
+      case MaxCutDataType.edgingWidth1Tag:
+        return "";
+      case MaxCutDataType.edgingWidth2Tag:
+        return "";
+      case MaxCutDataType.applyMachiningCharge:
+        return "";
+      case MaxCutDataType.longExpansion:
+        return "";
+      case MaxCutDataType.shortExpansion:
+        return "";
+    }
+  }
 }
 
 /// Example
@@ -232,7 +316,7 @@ class MaxCutResult {
     for (final dataType in MaxCutDataType.values) {
       // Actual value inside Excel cell
       final String typeValue = object[dataType] ?? dataType.defaultValue ?? "";
-      res += '"$typeValue"$sep';
+      res += '"$typeValue${dataType.appendValue}"$sep';
     }
     return res;
   }
@@ -251,7 +335,7 @@ class MaxCutResult {
 
   static String dumpAll(List<MaxCutResult> results) {
     String res = "";
-    if(results.isEmpty){
+    if (results.isEmpty) {
       return res;
     }
 
@@ -262,4 +346,3 @@ class MaxCutResult {
     return res;
   }
 }
-

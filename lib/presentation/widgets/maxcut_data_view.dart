@@ -121,7 +121,7 @@ class _MaxDataCell extends ConsumerWidget {
         padding: const EdgeInsets.all(0),
       ),
       onPressed: () => showEditingDialog(context, ref, data, maxDataObjectIndex, dataType, index),
-      child: Text(data ?? "/"),
+      child: Text(data ?? dataType.defaultValue ?? "/"),
     );
   }
 }
