@@ -12,6 +12,7 @@ class CellSelection {
   final int fixed;
   final bool isVertical;
 
+  //TODO: Add Checks > 0 and from <= to
   const CellSelection({
     required this.from,
     required this.to,
@@ -41,10 +42,3 @@ class CellSelection {
     }
   }
 }
-
-// class NamedCellSelection {
-//   final String name;
-//   final CellSelection? value;
-
-//   const NamedCellSelection(this.name, [this.value]);
-// }
