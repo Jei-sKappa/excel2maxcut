@@ -231,17 +231,35 @@ class MaxCutResult {
     String res = "";
     for (final dataType in MaxCutDataType.values) {
       // Actual value inside Excel cell
-      final String typeValue = object[dataType] ?? dataType.defaultValue ?? "/";
+      final String typeValue = object[dataType] ?? dataType.defaultValue ?? "";
       res += '"$typeValue"$sep';
     }
     return res;
   }
 
-  String dump() {
-    String res = "Sep=$sep\n$header\n";
+  String dump({bool includeHeader = true}) {
+    String res = "";
+    if (includeHeader) {
+      res += "Sep=$sep\n$header\n";
+    }
+
     for (final object in objects) {
       res += "${_dumpObject(object)}\n";
     }
     return res;
   }
+
+  static String dumpAll(List<MaxCutResult> results) {
+    String res = "";
+    if(results.isEmpty){
+      return res;
+    }
+
+    res += results.first.dump();
+    for (int i = 1; i < results.length; i++) {
+      res += results[i].dump(includeHeader: false);
+    }
+    return res;
+  }
 }
+

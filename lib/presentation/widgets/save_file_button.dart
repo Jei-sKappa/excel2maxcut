@@ -1,44 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/widgets/loading_widget.dart';
+import '../viewmodel/save_file_button_viewmodel.dart';
+
 class SaveFileButton extends ConsumerWidget {
   const SaveFileButton({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    //TODO: Readd this
-    return const SizedBox.shrink();
-    // final maxCutDataViewModel = ref.watch(maxCutDataViewModelProvider.notifier);
-    // final maxCutDataState = ref.watch(maxCutDataViewModelProvider);
-    // return maxCutDataState.maybeWhen(
-    //   orElse: () => const SizedBox.shrink(),
-    //   error: (exception) => Tooltip(
-    //     message: "Error: $exception",
-    //     child: const Icon(
-    //       Icons.error,
-    //       color: Colors.red,
-    //     ),
-    //   ),
-    //   success: (_) => TextButton(
-    //     onPressed: () async {
-    //       final response = await maxCutDataViewModel.saveFile();
-    //       late String message;
-    //       if (response == false) {
-    //         message = "Error: File not saved";
-    //       } else {
-    //         message = "File saved";
-    //       }
+    final saveFileButtonViewModel = ref.read(saveFileButtonViewModelProvider.notifier);
+    final state = ref.watch(saveFileButtonViewModelProvider);
 
-    //       WidgetsBinding.instance.addPostFrameCallback((_) {
-    //         ScaffoldMessenger.of(context).showSnackBar(
-    //           SnackBar(
-    //             content: Text(message),
-    //           ),
-    //         );
-    //       });
-    //     },
-    //     child: const Text("Export"),
-    //   ),
-    // );
+    return state.when(
+        loading: () => const LoadingWidget(),
+        error: (exception) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(exception.toString()),
+              ),
+            );
+          });
+          return TextButton(
+            onPressed: () async {
+              await saveFileButtonViewModel.saveFile();
+            },
+            child: const Text(
+              "Export",
+              style: TextStyle(color: Colors.red),
+            ),
+          );
+        },
+        init: () {
+          return TextButton(
+            onPressed: () async {
+              await saveFileButtonViewModel.saveFile();
+            },
+            child: const Text("Export"),
+          );
+        },
+        success: (_) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("File saved"),
+              ),
+            );
+          });
+          return TextButton(
+            onPressed: () async {
+              await saveFileButtonViewModel.saveFile();
+            },
+            child: const Text("Export"),
+          );
+        });
   }
 }
