@@ -3,10 +3,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'sheet_viewmodel.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class SheetViewModel extends _$SheetViewModel {
   @override
-  Sheet? build() => null;
+  Sheet? build(int index) => null;
 
   set(Sheet sheet) => state = sheet;
 }

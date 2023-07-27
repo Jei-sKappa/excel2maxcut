@@ -23,16 +23,16 @@ typedef _TypedCellSelection = (MaxCutDataType, CellSelection?);
 /// Es: Type Name, [Name1, Name2, Name3]
 typedef _TypedCellSelectionValueList = (MaxCutDataType, List<String>);
 
-@riverpod
+@Riverpod(keepAlive: true)
 class MaxCutDataViewModel extends _$MaxCutDataViewModel {
   @override
-  State<MaxCutResult> build() {
+  State<MaxCutResult> build(int index) {
     _parse();
     return const State.init();
   }
 
   Future _parse() async {
-    final sheet = ref.watch(sheetViewModelProvider);
+    final sheet = ref.watch(sheetViewModelProvider(index));
     debugPrint("Try Parsing...");
 
     //TODO: Handle Exception (for example in repository inside _getCoordsTuple)

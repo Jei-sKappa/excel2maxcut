@@ -1,8 +1,7 @@
+import 'package:excel2maxcut/presentation/viewmodel/multiple_excel_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/widgets/loading_widget.dart';
-import '../viewmodel/multiple_excel_viewmodel.dart';
 import 'excel_view.dart';
 
 class MultipleExcelView extends ConsumerStatefulWidget {
@@ -13,38 +12,78 @@ class MultipleExcelView extends ConsumerStatefulWidget {
 }
 
 class _MultipleExcelViewState extends ConsumerState<MultipleExcelView> {
+  late final PageController pageController;
+
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(multipleExcelViewModelProvider.notifier).getFile();
-    });
+    pageController = PageController();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(builder: (context, ref, child) {
-      final viewModel = ref.read(multipleExcelViewModelProvider.notifier);
-      return ref.watch(multipleExcelViewModelProvider).maybeWhen(
-            success: (excel) => ExcelView(excel),
-            loading: () => const LoadingWidget(),
-            orElse: () => _PickExcelFileWidget(viewModel.getFile),
-          );
+    final multipleExcelViewModel = ref.read(multipleExcelViewModelProvider.notifier);
+    final excelFilesCount = ref.watch(multipleExcelViewModelProvider.select((state) => state.count));
+    ref.listen(multipleExcelViewModelProvider, (previous, next) {
+      final selectedPage = next.selectedPage;
+      if (previous?.selectedPage != selectedPage) {
+        pageController.animateToPage(
+          selectedPage,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+      }
     });
-  }
-}
-
-class _PickExcelFileWidget extends StatelessWidget {
-  final VoidCallback onPicked;
-  const _PickExcelFileWidget(this.onPicked);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: TextButton(
-        onPressed: onPicked,
-        child: const Text('Select Excel File'),
-      ),
+    return Column(
+      children: [
+        SizedBox(
+          height: 55,
+          child: Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.add),
+                onPressed: multipleExcelViewModel.add,
+              ),
+              if (excelFilesCount > 1)
+                IconButton(
+                  icon: const Icon(Icons.remove),
+                  onPressed: multipleExcelViewModel.remove,
+                ),
+              if (excelFilesCount > 1)
+                Expanded(
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: excelFilesCount,
+                    itemBuilder: (context, index) {
+                      return Consumer(
+                        builder: (context, ref, child) {
+                          ref.watch(multipleExcelViewModelProvider);
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: ChoiceChip(
+                              onSelected: (_) => multipleExcelViewModel.selectPage(index),
+                              selected: multipleExcelViewModel.isSelected(index),
+                              label: Text('Excel ${index + 1}'),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: PageView(
+            controller: pageController,
+            children: List.generate(
+              excelFilesCount,
+              (index) => ExcelView(index),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

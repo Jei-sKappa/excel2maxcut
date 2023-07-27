@@ -7,11 +7,12 @@ import '../../domain/maxcutdata.dart';
 import '../viewmodel/maxcut_data_viewmodel.dart';
 
 class MaxCutDataView extends ConsumerWidget {
-  const MaxCutDataView({super.key});
+  final int index;
+  const MaxCutDataView(this.index, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final maxCutDataState = ref.watch(maxCutDataViewModelProvider);
+    final maxCutDataState = ref.watch(maxCutDataViewModelProvider(index));
     return maxCutDataState.maybeWhen(
       orElse: () => const Text("No Data"),
       loading: () => const LoadingWidget(),
@@ -46,6 +47,7 @@ class MaxCutDataView extends ConsumerWidget {
                             data: data,
                             maxDataObjectIndex: fixedColIndex,
                             dataType: maxCutDataType,
+                            index: index,
                           );
                         },
                       ),
@@ -69,14 +71,16 @@ class _MaxDataCell extends ConsumerWidget {
 
   final MaxCutDataType dataType;
 
+  final int index;
+
   const _MaxDataCell({
     required this.data,
     required this.maxDataObjectIndex,
     required this.dataType,
-    super.key,
+    required this.index,
   });
 
-  void showEditingDialog(BuildContext context, WidgetRef ref, MaxCutData? data, int maxDataObjectIndex, MaxCutDataType dataType) {
+  void showEditingDialog(BuildContext context, WidgetRef ref, MaxCutData? data, int maxDataObjectIndex, MaxCutDataType dataType, int index) {
     showDialog(
         context: context,
         builder: (context) {
@@ -86,20 +90,20 @@ class _MaxDataCell extends ConsumerWidget {
               height: 200,
               child: TextEditingView(
                 data ?? "",
-                onSubmitted: (newData) => onSubmitted(context, ref, newData),
+                onSubmitted: (newData) => onSubmitted(context, ref, newData, index),
               ),
             ),
           );
         });
   }
 
-  void onSubmitted(BuildContext context, WidgetRef ref, String newData) {
-    saveData(context, ref, newData);
+  void onSubmitted(BuildContext context, WidgetRef ref, String newData, int index) {
+    saveData(context, ref, newData, index);
     Navigator.of(context).pop();
   }
 
-  void saveData(BuildContext context, WidgetRef ref, String newData) {
-    final response = ref.read(maxCutDataViewModelProvider.notifier).customizeData(newData, dataType, maxDataObjectIndex);
+  void saveData(BuildContext context, WidgetRef ref, String newData, int index) {
+    final response = ref.read(maxCutDataViewModelProvider(index).notifier).customizeData(newData, dataType, maxDataObjectIndex);
 
     if (response == false) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -116,7 +120,7 @@ class _MaxDataCell extends ConsumerWidget {
       style: TextButton.styleFrom(
         padding: const EdgeInsets.all(0),
       ),
-      onPressed: () => showEditingDialog(context, ref, data, maxDataObjectIndex, dataType),
+      onPressed: () => showEditingDialog(context, ref, data, maxDataObjectIndex, dataType, index),
       child: Text(data ?? "/"),
     );
   }

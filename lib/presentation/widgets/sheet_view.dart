@@ -10,7 +10,8 @@ import '../viewmodel/sheet_viewmodel.dart';
 import 'cell_content.dart';
 
 class SheetView extends StatefulWidget {
-  const SheetView({super.key});
+  final int index;
+  const SheetView(this.index, {super.key});
 
   @override
   State<SheetView> createState() => _SheetViewState();
@@ -42,7 +43,7 @@ class _SheetViewState extends State<SheetView> {
     final firstStaticCellColor = isLightTheme ? Colors.grey.shade400 : Colors.grey.shade900;
     return Consumer(
       builder: (context, ref, _) {
-        final sheet = ref.watch(sheetViewModelProvider);
+        final sheet = ref.watch(sheetViewModelProvider(widget.index));
         if (sheet == null) return const Text("No sheet selected");
 
         return DataTable2(
