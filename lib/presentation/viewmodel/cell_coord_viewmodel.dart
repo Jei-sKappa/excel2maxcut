@@ -3,20 +3,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../data/data_module.dart';
 import '../../domain/cell_coord.dart';
 import '../state/state.dart';
-import 'app_data_viewmodel.dart';
+import 'maxcut_data_viewmodel.dart';
 import 'config_type_viewmodel.dart';
 
 part 'cell_coord_viewmodel.g.dart';
-
-// @riverpod
-// void allCellCoords(AllCellCoordsRef ref) {
-//   ConfigTypeAction.actionAll((configType) {
-//     ref.listen(
-//       cellCoordViewModelProvider(configType),
-//       (_, __) => ref.invalidateSelf(),
-//     );
-//   });
-// }
 
 @riverpod
 class CellCoordViewModel extends _$CellCoordViewModel {
@@ -42,7 +32,7 @@ class CellCoordViewModel extends _$CellCoordViewModel {
       return;
     }
 
-    ref.invalidate(appDataViewModelProvider); // AppData depends on this so when this changes, AppData should be invalidated
+    ref.invalidate(maxCutDataViewModelProvider); // AppData depends on this so when this changes, AppData should be invalidated
     final completed = await repository.set(configType, coord);
     if (!completed) {
       state = State.error(Exception("Error while saving the config"));

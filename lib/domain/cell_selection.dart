@@ -20,7 +20,7 @@ class CellSelection {
   });
 
   /// Returns the [CellSelection] from the given [CellCoord]s.
-  /// Is null if the given [CellCoord]s are not valid.
+  /// Is Null if the given [CellCoord]s are not valid.
   static CellSelection? fromCellCoords({
     required CellCoord start,
     required CellCoord limit,
@@ -42,9 +42,9 @@ class CellSelection {
   }
 }
 
-class NamedCellSelection {
-  final String name;
-  final CellSelection? value;
+// class NamedCellSelection {
+//   final String name;
+//   final CellSelection? value;
 
-  const NamedCellSelection(this.name, [this.value]);
-}
+//   const NamedCellSelection(this.name, [this.value]);
+// }

@@ -1,5 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../domain/maxcutdata.dart';
+
 part 'config_type_viewmodel.g.dart';
 
 enum ConfigType {
@@ -13,20 +15,21 @@ enum ConfigType {
   widthLimit,
 }
 
-class ConfigTypeActionTuple<T>{
-  final String name;
-  final (T,T) tuple;
+class ConfigTypeActionTuple<T> {
+  final MaxCutDataType name;
+  final (T, T) tuple;
 
   const ConfigTypeActionTuple(this.name, this.tuple);
 }
 
+//TODO: Remove all this if favor of MaxCutData
 class ConfigTypeAction {
   static List<ConfigTypeActionTuple<T>> actionAll<T>(T Function(ConfigType) action) {
     final response = [
-      ConfigTypeActionTuple("Name", (action(ConfigType.name), action(ConfigType.nameLimit))),
-      ConfigTypeActionTuple("Quantity", (action(ConfigType.quantity), action(ConfigType.quantityLimit))),
-      ConfigTypeActionTuple("Height", (action(ConfigType.height), action(ConfigType.heightLimit))),
-      ConfigTypeActionTuple("Width", (action(ConfigType.width), action(ConfigType.widthLimit))),
+      ConfigTypeActionTuple(MaxCutDataType.nome, (action(ConfigType.name), action(ConfigType.nameLimit))),
+      ConfigTypeActionTuple(MaxCutDataType.quantita, (action(ConfigType.quantity), action(ConfigType.quantityLimit))),
+      ConfigTypeActionTuple(MaxCutDataType.lunghezza, (action(ConfigType.height), action(ConfigType.heightLimit))),
+      ConfigTypeActionTuple(MaxCutDataType.larghezza, (action(ConfigType.width), action(ConfigType.widthLimit))),
     ];
 
     return response;
@@ -34,10 +37,10 @@ class ConfigTypeAction {
 
   static Future<List<ConfigTypeActionTuple<T>>> actionAllFuture<T>(Future<T> Function(ConfigType) action) async {
     final responses = [
-      ConfigTypeActionTuple("Name", (await action(ConfigType.name), await action(ConfigType.nameLimit))),
-      ConfigTypeActionTuple("Quantity", (await action(ConfigType.quantity), await action(ConfigType.quantityLimit))),
-      ConfigTypeActionTuple("Height", (await action(ConfigType.height), await action(ConfigType.heightLimit))),
-      ConfigTypeActionTuple("Width", (await action(ConfigType.width), await action(ConfigType.widthLimit))),
+      ConfigTypeActionTuple(MaxCutDataType.nome, (await action(ConfigType.name), await action(ConfigType.nameLimit))),
+      ConfigTypeActionTuple(MaxCutDataType.quantita, (await action(ConfigType.quantity), await action(ConfigType.quantityLimit))),
+      ConfigTypeActionTuple(MaxCutDataType.lunghezza, (await action(ConfigType.height), await action(ConfigType.heightLimit))),
+      ConfigTypeActionTuple(MaxCutDataType.larghezza, (await action(ConfigType.width), await action(ConfigType.widthLimit))),
     ];
 
     return responses;

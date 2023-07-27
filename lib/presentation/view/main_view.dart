@@ -2,7 +2,7 @@ import 'package:excel/excel.dart';
 import 'package:excel2maxcut/presentation/view/excel_view.dart';
 import 'package:flutter/material.dart';
 
-import '../widgets/app_data_view.dart';
+import '../widgets/maxcut_data_view.dart';
 import '../widgets/config_interactor.dart';
 
 class MainView extends StatelessWidget {
@@ -19,7 +19,7 @@ class MainView extends StatelessWidget {
         ),
         ConstrainedBox(
           constraints: const BoxConstraints(maxHeight: 200),
-          child: const AppDataView(),
+          child: const MaxCutDataView(),
         ),
         const Divider(),
         Flexible(
