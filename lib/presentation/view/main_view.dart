@@ -1,30 +1,23 @@
-import 'package:excel/excel.dart';
-import 'package:excel2maxcut/presentation/view/excel_view.dart';
 import 'package:flutter/material.dart';
 
-import '../widgets/maxcut_data_view.dart';
 import '../widgets/config_interactor.dart';
+import 'multiple_excel_view.dart';
 
 class MainView extends StatelessWidget {
-  final Excel excel;
-  const MainView(this.excel, {super.key});
+  const MainView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       children: [
-        const SizedBox(
+        SizedBox(
           height: 80,
           child: ConfigInteractor(),
         ),
-        ConstrainedBox(
-          constraints: const BoxConstraints(maxHeight: 200),
-          child: const MaxCutDataView(),
-        ),
-        const Divider(),
+        Divider(),
         Flexible(
           fit: FlexFit.tight,
-          child: ExcelView(excel),
+          child: MultipleExcelView(),
         ),
       ],
     );

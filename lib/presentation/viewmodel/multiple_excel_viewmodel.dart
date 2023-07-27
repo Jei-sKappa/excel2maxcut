@@ -8,10 +8,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../state/state.dart';
 
-part 'skeleton_viewmodel.g.dart';
+part 'multiple_excel_viewmodel.g.dart';
 
 @riverpod
-class SkeletonViewModel extends _$SkeletonViewModel {
+class MultipleExcelViewModel extends _$MultipleExcelViewModel {
   @override
   State<Excel> build() {
     // getFile(); // TODO: Remove

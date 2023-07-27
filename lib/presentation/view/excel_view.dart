@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../viewmodel/sheet_viewmodel.dart';
+import '../widgets/maxcut_data_view.dart';
 import '../widgets/sheet_view.dart';
 
 class ExcelView extends StatelessWidget {
@@ -13,6 +14,11 @@ class ExcelView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxHeight: 200),
+          child: const MaxCutDataView(),
+        ),
+        const Divider(),        
         _ExcelTablesBar(excel.tables),
         const Flexible(
           fit: FlexFit.tight,
