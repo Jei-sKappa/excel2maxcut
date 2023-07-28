@@ -7,6 +7,7 @@ import 'config_type_viewmodel.dart';
 
 part 'cell_content_viewmodel.g.dart';
 
+//TODO: Implement this
 enum CellState {
   normal,
   hovered,
