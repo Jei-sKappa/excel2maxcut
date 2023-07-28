@@ -3,6 +3,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../core/database/database_provider.dart';
 import 'datasource/cell_coords_datasource.dart';
+import 'datasource/datatype_config_datasource.dart';
+import 'repository/datatype_config_repository.dart';
 
 part 'data_module.g.dart';
 
@@ -13,6 +15,17 @@ CellCoordsDataSource _cellCoordsDatasource(_CellCoordsDatasourceRef ref) {
 }
 
 @riverpod
+DataTypeConfigDataSource _dataTypeConfigDatasource(_DataTypeConfigDatasourceRef ref) {
+  final database = ref.watch(databaseProvider.future);
+  return DataTypeConfigDataSource(database);
+}
+
+@riverpod
 CellCoordsRepository cellCoordsRepository(CellCoordsRepositoryRef ref) {
   return CellCoordsRepository(ref.read(_cellCoordsDatasourceProvider));
+}
+
+@riverpod
+DataTypeConfigRepository dataTypeConfigRepository(DataTypeConfigRepositoryRef ref) {
+  return DataTypeConfigRepository(ref.read(_dataTypeConfigDatasourceProvider));
 }

@@ -143,7 +143,7 @@ extension MaxCutDataTypeExtension on MaxCutDataType {
       case MaxCutDataType.puoRuotare:
         return "IfNoGrain";
       case MaxCutDataType.materiale:
-        return "2000x1000";
+        return null;
       case MaxCutDataType.bordaturaLunghezza1:
         return null;
       case MaxCutDataType.bordaturaLunghezza2:

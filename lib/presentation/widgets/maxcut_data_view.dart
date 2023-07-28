@@ -5,6 +5,8 @@ import '../../core/widgets/loading_widget.dart';
 import '../../core/widgets/text_editing_view.dart';
 import '../../domain/maxcutdata.dart';
 import '../viewmodel/maxcut_data_viewmodel.dart';
+import '../viewmodel/maxcut_datatype_config_viewmodel.dart';
+import 'maxcut_datatype_default_values_selector.dart';
 
 class MaxCutDataView extends ConsumerWidget {
   final int index;
@@ -87,19 +89,39 @@ class _MaxDataCell extends ConsumerWidget {
           return Dialog(
             child: SizedBox(
               width: 320,
-              height: 200,
-              child: TextEditingView(
-                data ?? "",
-                onSubmitted: (newData) => onSubmitted(context, ref, newData, index),
+              height: 230,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: TextEditingView(
+                      data ?? "",
+                      onSubmitted: (newData) => onSubmitted(context, ref, newData, index),
+                    ),
+                  ),
+                  MaxCutDataTypeDefaultValuesSelector(
+                    maxCutDataType: dataType,
+                    onChanged: (newData) => newValueSelectedHandler(context, ref, newData, index),
+                  )
+                ],
               ),
             ),
           );
         });
   }
 
-  void onSubmitted(BuildContext context, WidgetRef ref, String newData, int index) {
+  void newValueSelectedHandler(BuildContext context, WidgetRef ref, String newData, int index) {
     saveData(context, ref, newData, index);
     Navigator.of(context).pop();
+  }
+
+  void onSubmitted(BuildContext context, WidgetRef ref, String newData, int index) {
+    setNewDefaultValue(context, ref, newData, index);
+    newValueSelectedHandler(context, ref, newData, index);
+  }
+
+  void setNewDefaultValue(BuildContext context, WidgetRef ref, String newData, int index){
+    //TODO: Handle Response
+    ref.read(maxCutDataTypeConfigViewModelProvider(dataType).notifier).addDefaultValue(newData);
   }
 
   void saveData(BuildContext context, WidgetRef ref, String newData, int index) {
