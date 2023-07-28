@@ -1,18 +1,18 @@
-import 'package:excel2maxcut/data/datasource/prefs_datasource.dart';
-import 'package:excel2maxcut/data/repository/prefs_repository.dart';
+import 'package:excel2maxcut/data/repository/cell_coords_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../core/database/database_provider.dart';
+import 'datasource/cell_coords_datasource.dart';
 
 part 'data_module.g.dart';
 
 @riverpod
-PrefsDataSource _plannerDatasource(_PlannerDatasourceRef ref) {
+CellCoordsDataSource _cellCoordsDatasource(_CellCoordsDatasourceRef ref) {
   final database = ref.watch(databaseProvider.future);
-  return PrefsDataSource(database);
+  return CellCoordsDataSource(database);
 }
 
 @riverpod
-PrefsRepository prefsRepository(PrefsRepositoryRef ref) {
-  return PrefsRepository(ref.read(_plannerDatasourceProvider));
+CellCoordsRepository cellCoordsRepository(CellCoordsRepositoryRef ref) {
+  return CellCoordsRepository(ref.read(_cellCoordsDatasourceProvider));
 }

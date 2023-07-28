@@ -2,7 +2,7 @@ import 'package:excel2maxcut/domain/cell_coord.dart';
 
 import '../entity/cell_coords_entity.dart';
 
-class PrefsMapper {
+class CellCoordMapper {
   static CellCoordEntity toEntity(CellCoord model) {
     return (model.row, model.col);
   }

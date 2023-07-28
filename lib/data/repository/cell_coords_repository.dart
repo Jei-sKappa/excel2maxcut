@@ -1,14 +1,14 @@
 import '../../domain/cell_coord.dart';
 import '../../presentation/viewmodel/config_type_viewmodel.dart';
-import '../datasource/prefs_datasource.dart';
-import '../mapper/prefs_mapper.dart';
+import '../datasource/cell_coords_datasource.dart';
+import '../mapper/cell_coord_mapper.dart';
 
-class PrefsRepository {
-  final PrefsDataSource datasource;
+class CellCoordsRepository {
+  final CellCoordsDataSource datasource;
 
-  const PrefsRepository(this.datasource);
+  const CellCoordsRepository(this.datasource);
 
-  Future<CellCoord?> get(ConfigType configType){
+  Future<CellCoord?> get(ConfigType configType) {
     switch (configType) {
       case ConfigType.name:
         return _getStartNameCoord();
@@ -55,7 +55,7 @@ class PrefsRepository {
     final col = await datasource.getNameCellColIndex();
     if (row == null || col == null) return null;
 
-    return PrefsMapper.toModel((row, col));
+    return CellCoordMapper.toModel((row, col));
   }
 
   Future<bool> _setStartNameCellIndex(CellCoord coord) async {
@@ -70,7 +70,7 @@ class PrefsRepository {
     final col = await datasource.getNameCellColIndexLimit();
     if (row == null || col == null) return null;
 
-    return PrefsMapper.toModel((row, col));
+    return CellCoordMapper.toModel((row, col));
   }
 
   Future<bool> _setLimitNameCellIndex(CellCoord coord) async {
@@ -85,7 +85,7 @@ class PrefsRepository {
     final col = await datasource.getQuantityCellColIndex();
     if (row == null || col == null) return null;
 
-    return PrefsMapper.toModel((row, col));
+    return CellCoordMapper.toModel((row, col));
   }
 
   Future<bool> _setStartQuantityCellIndex(CellCoord coord) async {
@@ -100,7 +100,7 @@ class PrefsRepository {
     final col = await datasource.getQuantityCellColIndexLimit();
     if (row == null || col == null) return null;
 
-    return PrefsMapper.toModel((row, col));
+    return CellCoordMapper.toModel((row, col));
   }
 
   Future<bool> _setLimitQuantityCellIndex(CellCoord coord) async {
@@ -115,7 +115,7 @@ class PrefsRepository {
     final col = await datasource.getHeightCellColIndex();
     if (row == null || col == null) return null;
 
-    return PrefsMapper.toModel((row, col));
+    return CellCoordMapper.toModel((row, col));
   }
 
   Future<bool> _setStartHeightCellIndex(CellCoord coord) async {
@@ -130,7 +130,7 @@ class PrefsRepository {
     final col = await datasource.getHeightCellColIndexLimit();
     if (row == null || col == null) return null;
 
-    return PrefsMapper.toModel((row, col));
+    return CellCoordMapper.toModel((row, col));
   }
 
   Future<bool> _setLimitHeightCellIndex(CellCoord coord) async {
@@ -145,7 +145,7 @@ class PrefsRepository {
     final col = await datasource.getWidthCellColIndex();
     if (row == null || col == null) return null;
 
-    return PrefsMapper.toModel((row, col));
+    return CellCoordMapper.toModel((row, col));
   }
 
   Future<bool> _setStartWidthCellIndex(CellCoord coord) async {
@@ -160,7 +160,7 @@ class PrefsRepository {
     final col = await datasource.getWidthCellColIndexLimit();
     if (row == null || col == null) return null;
 
-    return PrefsMapper.toModel((row, col));
+    return CellCoordMapper.toModel((row, col));
   }
 
   Future<bool> _setLimitWidthCellIndex(CellCoord coord) async {

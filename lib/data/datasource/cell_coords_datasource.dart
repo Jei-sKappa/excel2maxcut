@@ -1,10 +1,11 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-const _prefix = "exel2maxcut";
-const _nameField = "${_prefix}_name";
-const _quantityField = "${_prefix}_quantity";
-const _heightField = "${_prefix}_height";
-const _widthField = "${_prefix}_width";
+import '../../core/database/constants.dart';
+
+const _nameField = "${databasePrefix}_name";
+const _quantityField = "${databasePrefix}_quantity";
+const _heightField = "${databasePrefix}_height";
+const _widthField = "${databasePrefix}_width";
 const _nameFieldRow = "${_nameField}_row";
 const _nameFieldCol = "${_nameField}_column";
 const _quantityFieldRow = "${_quantityField}_row";
@@ -22,10 +23,10 @@ const _heightFieldColLimit = "${_heightFieldCol}_limit";
 const _widthFieldRowLimit = "${_widthFieldRow}_limit";
 const _widthFieldColLimit = "${_widthFieldCol}_limit";
 
-class PrefsDataSource {
+class CellCoordsDataSource {
   final Future<SharedPreferences> _db;
 
-  PrefsDataSource(Future<SharedPreferences> isarDB) : _db = isarDB;
+  CellCoordsDataSource(Future<SharedPreferences> isarDB) : _db = isarDB;
 
   Future<int?> getNameCellRowIndex() async {
     final prefs = await _db;

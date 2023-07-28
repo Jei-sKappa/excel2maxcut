@@ -17,7 +17,7 @@ class CellCoordViewModel extends _$CellCoordViewModel {
   }
 
   Future _load() async {
-    final repository = ref.read(prefsRepositoryProvider);
+    final repository = ref.read(cellCoordsRepositoryProvider);
     final coords = await repository.get(configType);
     state = State.success(coords);
   }
@@ -25,7 +25,7 @@ class CellCoordViewModel extends _$CellCoordViewModel {
   Future save(CellCoord coord) async {
     state = const State.loading();
 
-    final repository = ref.read(prefsRepositoryProvider);
+    final repository = ref.read(cellCoordsRepositoryProvider);
     final currentCoord = await repository.get(configType);
     if(currentCoord == coord){
       state = State.success(coord);

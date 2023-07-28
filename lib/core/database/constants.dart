@@ -1,0 +1,1 @@
+const databasePrefix = "exel2maxcut";

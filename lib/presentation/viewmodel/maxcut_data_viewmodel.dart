@@ -72,7 +72,7 @@ class MaxCutDataViewModel extends _$MaxCutDataViewModel {
 
   /// {"CoordTitle": ("CoordStart", "CoordLimit"), ...}
   Future<List<ConfigTypeActionTuple<CellCoord?>>> _getCoordsTuple() async {
-    final repository = ref.read(prefsRepositoryProvider);
+    final repository = ref.read(cellCoordsRepositoryProvider);
     //TODO: Refactor this
     final responses = await ConfigTypeAction.actionAllFuture((configType) async => await repository.get(configType));
     return responses;
