@@ -55,6 +55,7 @@ class _TextEditingViewState extends State<TextEditingView> {
             child: Center(
               child: TextField(
                 controller: controller,
+                autofocus: true,
                 onEditingComplete: () => widget.onSubmitted(controller.text.trim()),
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
