@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/maxcutdata.dart';
 import '../viewmodel/maxcut_datatype_config_viewmodel.dart';
 
+//TODO: Rename "default values" to "presets"
 class MaxCutDataTypeDefaultValuesSelector extends ConsumerStatefulWidget {
   final MaxCutDataType maxCutDataType;
   final void Function(String) onChanged;
@@ -35,8 +36,13 @@ class _MaxCutDataTypeDefaultValuesSelectorState extends ConsumerState<MaxCutData
       orElse: () => const LoadingWidget(),
       success: (config) {
         final defaultValues = config?.defaultValues ?? [];
+
+        if (defaultValues.isEmpty) {
+          return const Text("No Presets");
+        }
+
         return DropdownButton<String>(
-          value: selectedValue,
+          value: selectedValue ?? defaultValues.first, // I use .first wihout checking if it's empty because I checked it before
           icon: const Icon(Icons.arrow_downward),
           elevation: 16,
           style: const TextStyle(color: Colors.deepPurple),

@@ -71,6 +71,21 @@ class MaxCutDataViewModel extends _$MaxCutDataViewModel {
     return true;
   }
 
+  bool addToAllPieces(MaxCutData newData, MaxCutDataType dataType) {
+    final result = state.data;
+    if (result == null) {
+      return false;
+    }
+
+    for (final object in result.objects) {
+      object[dataType] = newData;
+    }
+
+    state = State.success(result);
+
+    return true;
+  }
+
   /// {"CoordTitle": ("CoordStart", "CoordLimit"), ...}
   Future<List<ConfigTypeActionTuple<CellCoord?>>> _getCoordsTuple() async {
     final repository = ref.read(cellCoordsRepositoryProvider);

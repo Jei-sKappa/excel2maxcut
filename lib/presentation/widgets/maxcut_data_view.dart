@@ -16,8 +16,8 @@ class MaxCutDataView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final maxCutDataState = ref.watch(maxCutDataViewModelProvider(index));
     return maxCutDataState.maybeWhen(
-      orElse: () => const Text("No Data"),
-      loading: () => const LoadingWidget(),
+      error: (exception) => Text("Error: ${exception.toString()}"),
+      orElse: () => const LoadingWidget(),
       success: (maxCutData) {
         final maxCutObjects = maxCutData.objects;
         if (maxCutObjects.isEmpty) return const SizedBox.shrink();
@@ -83,30 +83,69 @@ class _MaxDataCell extends ConsumerWidget {
   });
 
   void showEditingDialog(BuildContext context, WidgetRef ref, MaxCutData? data, int maxDataObjectIndex, MaxCutDataType dataType, int index) {
+    final String adjustedData = data ?? "";
     showDialog(
         context: context,
         builder: (context) {
           return Dialog(
             child: SizedBox(
-              width: 320,
-              height: 230,
-              child: Column(
-                children: [
-                  Expanded(
-                    child: TextEditingView(
-                      data ?? "",
-                      onSubmitted: (newData) => onSubmitted(context, ref, newData, index),
+              width: 400,
+              height: 400,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 180,
+                      child: TextEditingView(
+                        adjustedData,
+                        onSubmitted: (newData) => newValueSelectedHandler(context, ref, newData, index),
+                        onSetPreset: (newData) => setNewPresetHandler(context, ref, newData, index),
+                      ),
                     ),
-                  ),
-                  MaxCutDataTypeDefaultValuesSelector(
-                    maxCutDataType: dataType,
-                    onChanged: (newData) => newValueSelectedHandler(context, ref, newData, index),
-                  )
-                ],
+                    const Text(
+                      "Presets:",
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    MaxCutDataTypeDefaultValuesSelector(
+                      maxCutDataType: dataType,
+                      onChanged: (newData) => newValueSelectedHandler(context, ref, newData, index),
+                    ),
+                    const Divider(),
+                    Center(
+                      child: TextButton(
+                        onPressed: () => addToAllPieces(context, ref, adjustedData, index),
+                        child: const Text("Add To All Pieces"),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           );
         });
+  }
+
+  void addToAllPiecesHandler(BuildContext context, WidgetRef ref, String data, int index) {
+    addToAllPieces(context, ref, data, index);
+    Navigator.of(context).pop();
+  }
+
+  void addToAllPieces(BuildContext context, WidgetRef ref, String data, int index) {
+    final response = ref.read(maxCutDataViewModelProvider(index).notifier).addToAllPieces(data, dataType);
+
+    if (response == false) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Error: While Updating All Data"),
+        ),
+      );
+    }
   }
 
   void newValueSelectedHandler(BuildContext context, WidgetRef ref, String newData, int index) {
@@ -114,12 +153,13 @@ class _MaxDataCell extends ConsumerWidget {
     Navigator.of(context).pop();
   }
 
-  void onSubmitted(BuildContext context, WidgetRef ref, String newData, int index) {
-    setNewDefaultValue(context, ref, newData, index);
-    newValueSelectedHandler(context, ref, newData, index);
+  void setNewPresetHandler(BuildContext context, WidgetRef ref, String newData, int index) {
+    setNewPreset(context, ref, newData, index);
+    saveData(context, ref, newData, index);
+    Navigator.of(context).pop();
   }
 
-  void setNewDefaultValue(BuildContext context, WidgetRef ref, String newData, int index){
+  void setNewPreset(BuildContext context, WidgetRef ref, String newData, int index) {
     //TODO: Handle Response
     ref.read(maxCutDataTypeConfigViewModelProvider(dataType).notifier).addDefaultValue(newData);
   }
