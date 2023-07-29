@@ -38,6 +38,7 @@ dependencies:
   flutter_riverpod: ^2.3.6
   freezed: ^2.4.1
   freezed_annotation: ^2.4.1
+  math_parser: ^1.5.1
   riverpod_annotation: ^2.1.1
   shared_preferences: ^2.2.0
 

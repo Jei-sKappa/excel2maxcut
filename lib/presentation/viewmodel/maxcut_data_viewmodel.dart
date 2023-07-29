@@ -1,5 +1,6 @@
 import 'package:excel/excel.dart';
 import 'package:flutter/foundation.dart';
+import 'package:math_parser/math_parser.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../data/data_module.dart';
@@ -128,10 +129,20 @@ class MaxCutDataViewModel extends _$MaxCutDataViewModel {
         continue;
       }
 
-      if (cell == null || cell.isFormula) continue;
-      // final coord = CellCoord.fromCellIndex(cell.cellIndex);
-      // print("Coord: $coord | Value: ${cell.value}");
-      parsedData.add("${cell.value}");
+      if (cell == null) continue;
+
+      String cellValue = cell.value.toString();
+
+      if (cell.isFormula) {
+        try {
+          final expression = MathNodeExpression.fromString(cellValue).calc(const MathVariableValues({}));
+          cellValue = expression.toString();
+        } on CantProcessExpressionException {
+          cellValue = "Unrecognized Formula";
+        }
+      }
+
+      parsedData.add(cellValue);
     }
 
     return parsedData;

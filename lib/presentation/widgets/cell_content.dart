@@ -46,6 +46,7 @@ class _CellContentState extends State<CellContent> {
                 if (widget.data == null) {
                   return const SizedBox.shrink();
                 }
+                bool isFormula = widget.data!.isFormula;
 
                 final text = widget.data!.value.toString();
                 CellStyle? cellStyle = widget.data!.cellStyle;
@@ -58,6 +59,7 @@ class _CellContentState extends State<CellContent> {
                   style: TextStyle(
                     fontWeight: fontWeight,
                     fontStyle: fontStyle,
+                    decoration: isFormula ? TextDecoration.underline : null,
                   ),
                 );
               },
