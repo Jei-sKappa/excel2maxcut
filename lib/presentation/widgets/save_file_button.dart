@@ -22,6 +22,7 @@ class SaveFileButton extends ConsumerWidget {
               ),
             );
           });
+          //TODO: Prevent this error when the "error" is when the user cancel volountarily the operation
           return TextButton(
             onPressed: () async {
               await saveFileButtonViewModel.saveFile();
