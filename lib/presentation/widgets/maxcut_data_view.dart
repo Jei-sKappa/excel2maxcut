@@ -115,6 +115,7 @@ class _MaxDataCell extends ConsumerWidget {
                     MaxCutDataTypeDefaultValuesSelector(
                       maxCutDataType: dataType,
                       onChanged: (newData) => newValueSelectedHandler(context, ref, newData, index),
+                      onRemoved: (newData) => removePreset(context, ref, newData, index),
                     ),
                     const Divider(),
                     Center(
@@ -162,6 +163,11 @@ class _MaxDataCell extends ConsumerWidget {
   void setNewPreset(BuildContext context, WidgetRef ref, String newData, int index) {
     //TODO: Handle Response
     ref.read(maxCutDataTypeConfigViewModelProvider(dataType).notifier).addDefaultValue(newData);
+  }
+
+  void removePreset(BuildContext context, WidgetRef ref, String newData, int index) {
+    //TODO: Handle Response
+    ref.read(maxCutDataTypeConfigViewModelProvider(dataType).notifier).removeDefaultValue(newData);
   }
 
   void saveData(BuildContext context, WidgetRef ref, String newData, int index) {

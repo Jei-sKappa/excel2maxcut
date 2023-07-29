@@ -38,13 +38,34 @@ class MaxCutDataTypeConfigViewModel extends _$MaxCutDataTypeConfigViewModel {
 
     final repository = ref.read(dataTypeConfigRepositoryProvider);
     final currentConfig = await repository.getConfig(_dataTypeKey);
+
+    // Check if the value is in the list
+    if (currentConfig.defaultValues?.contains(newValue) ?? false) {
+      //TODO: Show something
+      // state = State.error(Exception("The value is already in the list"));
+      return;
+    }
+
     final newConfig = currentConfig.copyWith(
       defaultValues: [...currentConfig.defaultValues ?? [], newValue],
     );
-    save(newConfig);
+    _save(newConfig);
   }
 
-  Future<void> save(DataTypeConfig config) async {
+  Future<void> removeDefaultValue(String value) async {
+    state = const State.loading();
+
+    //TODO: Add check if the value is in the list
+
+    final repository = ref.read(dataTypeConfigRepositoryProvider);
+    final currentConfig = await repository.getConfig(_dataTypeKey);
+    final newConfig = currentConfig.copyWith(
+      defaultValues: currentConfig.defaultValues?.where((element) => element != value).toList(),
+    );
+    _save(newConfig);
+  }
+
+  Future<void> _save(DataTypeConfig config) async {
     state = const State.loading();
 
     final repository = ref.read(dataTypeConfigRepositoryProvider);

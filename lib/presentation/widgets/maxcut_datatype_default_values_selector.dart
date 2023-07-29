@@ -9,9 +9,11 @@ import '../viewmodel/maxcut_datatype_config_viewmodel.dart';
 class MaxCutDataTypeDefaultValuesSelector extends ConsumerStatefulWidget {
   final MaxCutDataType maxCutDataType;
   final void Function(String) onChanged;
+  final void Function(String) onRemoved;
   const MaxCutDataTypeDefaultValuesSelector({
     required this.maxCutDataType,
     required this.onChanged,
+    required this.onRemoved,
     super.key,
   });
 
@@ -58,7 +60,18 @@ class _MaxCutDataTypeDefaultValuesSelectorState extends ConsumerState<MaxCutData
             final value = defaultValues[index];
             return DropdownMenuItem<String>(
               value: value,
-              child: Text(value),
+              child: Row(
+                children: [
+                  Text(value),
+                  IconButton(
+                    icon: const Icon(
+                      Icons.delete,
+                      size: 16,
+                    ),
+                    onPressed: () => widget.onRemoved(value),
+                  ),
+                ],
+              ),
             );
           }),
         );
