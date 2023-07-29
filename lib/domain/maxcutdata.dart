@@ -315,8 +315,13 @@ class MaxCutResult {
     String res = "";
     for (final dataType in MaxCutDataType.values) {
       // Actual value inside Excel cell
+      String dumpValue = "";
       final String typeValue = object[dataType] ?? dataType.defaultValue ?? "";
-      res += '"$typeValue${dataType.appendValue}"$sep';
+      if(typeValue.isNotEmpty){
+        dumpValue = "$typeValue${dataType.appendValue}";
+      }
+
+      res += '"$dumpValue"$sep';
     }
     return res;
   }
