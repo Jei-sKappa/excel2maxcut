@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/extension/number_to_aphabet_extension.dart';
 import '../../domain/cell_coord.dart';
 import '../../domain/excel_row.dart';
-import '../viewmodel/sheet_viewmodel.dart';
+import '../viewmodel/sheet_index_viewmodel.dart';
 import 'cell_content.dart';
 
 class SheetView extends StatefulWidget {
@@ -43,7 +43,8 @@ class _SheetViewState extends State<SheetView> {
     final firstStaticCellColor = isLightTheme ? Colors.grey.shade400 : Colors.grey.shade900;
     return Consumer(
       builder: (context, ref, _) {
-        final sheet = ref.watch(sheetViewModelProvider(widget.index));
+        final sheetIndex = ref.watch(sheetIndexViewModelProvider(widget.index));
+        final sheet = ref.read(sheetIndexViewModelProvider(widget.index).notifier).getSheet(sheetIndex);
         if (sheet == null) return const Text("No sheet selected");
 
         return DataTable2(

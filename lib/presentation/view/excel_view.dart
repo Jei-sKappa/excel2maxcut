@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/widgets/loading_widget.dart';
 import '../viewmodel/excel_viewmodel.dart';
-import '../viewmodel/sheet_viewmodel.dart';
+import '../viewmodel/sheet_index_viewmodel.dart';
 import '../widgets/maxcut_data_view.dart';
 import '../widgets/sheet_view.dart';
 
@@ -58,14 +58,19 @@ class _ExcelTablesBar extends ConsumerStatefulWidget {
 
 class _ExcelTablesBarState extends ConsumerState<_ExcelTablesBar> with TickerProviderStateMixin {
   late TabController _tabController;
-  late final SheetViewModel sheetViewModel;
+  late final SheetIndexViewModel sheetViewModel;
   late final Iterable<String> tableNames;
 
   @override
   void initState() {
     tableNames = widget.tables.keys;
-    _tabController = TabController(length: widget.tables.length, vsync: this);
-    sheetViewModel = ref.read(sheetViewModelProvider(widget.index).notifier);
+    sheetViewModel = ref.read(sheetIndexViewModelProvider(widget.index).notifier);
+    final sheetIndex = ref.read(sheetIndexViewModelProvider(widget.index));
+    _tabController = TabController(
+      initialIndex: sheetIndex,
+      length: widget.tables.length,
+      vsync: this,
+    );
     super.initState();
   }
 
@@ -75,16 +80,10 @@ class _ExcelTablesBarState extends ConsumerState<_ExcelTablesBar> with TickerPro
     super.dispose();
   }
 
-  void setSheet(int index) {
-    final sheet = widget.tables[tableNames.elementAt(index)]!;
-    sheetViewModel.set(sheet);
-  }
+  void setSheet(int index) => sheetViewModel.set(index);
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setSheet(_tabController.index);
-    });
     return TabBar(
       controller: _tabController,
       onTap: setSheet,

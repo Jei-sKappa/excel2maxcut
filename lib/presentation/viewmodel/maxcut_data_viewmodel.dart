@@ -9,7 +9,7 @@ import '../../domain/cell_selection.dart';
 import '../../domain/maxcutdata.dart';
 import '../state/state.dart';
 import 'config_type_viewmodel.dart';
-import 'sheet_viewmodel.dart';
+import 'sheet_index_viewmodel.dart';
 
 part 'maxcut_data_viewmodel.g.dart';
 
@@ -30,7 +30,8 @@ class MaxCutDataViewModel extends _$MaxCutDataViewModel {
   }
 
   Future _parse() async {
-    final sheet = ref.watch(sheetViewModelProvider(index));
+    final sheetIndex = ref.watch(sheetIndexViewModelProvider(index));
+    final sheet = ref.read(sheetIndexViewModelProvider(index).notifier).getSheet(sheetIndex);
     debugPrint("Try Parsing...");
 
     //TODO: Handle Exception (for example in repository inside _getCoordsTuple)
