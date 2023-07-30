@@ -25,7 +25,8 @@ class ExcelView extends StatelessWidget {
         return ref.watch(excelViewModelProvider(index)).maybeWhen(
               loading: () => const LoadingWidget(),
               orElse: () => _PickExcelFileWidget(viewModel.getFile),
-              success: (excel) {
+              success: (excelState) {
+                final excel = excelState.excel;
                 return Column(
                   children: [
                     ConstrainedBox(

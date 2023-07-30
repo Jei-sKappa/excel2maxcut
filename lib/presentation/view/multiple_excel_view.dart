@@ -2,6 +2,7 @@ import 'package:excel2maxcut/presentation/viewmodel/multiple_excel_viewmodel.dar
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../viewmodel/excel_viewmodel.dart';
 import 'excel_view.dart';
 
 class MultipleExcelView extends ConsumerStatefulWidget {
@@ -49,28 +50,30 @@ class _MultipleExcelViewState extends ConsumerState<MultipleExcelView> {
                   icon: const Icon(Icons.remove),
                   onPressed: multipleExcelViewModel.remove,
                 ),
-              if (excelFilesCount > 1)
-                Expanded(
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: excelFilesCount,
-                    itemBuilder: (context, index) {
-                      return Consumer(
-                        builder: (context, ref, child) {
-                          ref.watch(multipleExcelViewModelProvider);
-                          return Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: ChoiceChip(
-                              onSelected: (_) => multipleExcelViewModel.selectPage(index),
-                              selected: multipleExcelViewModel.isSelected(index),
-                              label: Text('Excel ${index + 1}'),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ),
+              Expanded(
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: excelFilesCount,
+                  itemBuilder: (context, index) {
+                    return Consumer(
+                      builder: (context, ref, child) {
+                        /* final selectedPage =  */ ref.watch(multipleExcelViewModelProvider.select((state) => state.selectedPage));
+                        final excelState = ref.watch(excelViewModelProvider(index));
+                        final excelStateData = excelState.data;
+                        final excelName = excelStateData?.fileName ?? "Excel ${index + 1}";
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: ChoiceChip(
+                            onSelected: (_) => multipleExcelViewModel.selectPage(index),
+                            selected: multipleExcelViewModel.isSelected(index),
+                            label: Text(excelName),
+                          ),
+                        );
+                      },
+                    );
+                  },
                 ),
+              ),
             ],
           ),
         ),

@@ -16,9 +16,10 @@ class SheetIndexViewModel extends _$SheetIndexViewModel {
   // because of that i not use "state" as index
   Sheet? getSheet(int index){
     final excelState = ref.read(excelViewModelProvider(excelFileIndex));
-    final excel = excelState.data;
-    if (excel == null) return null;
+    final excelStateData = excelState.data;
+    if (excelStateData == null) return null;
 
+    final excel = excelStateData.excel;
     final sheetName = excel.tables.keys.elementAt(index); // State represents the index of the sheet
     return excel.tables[sheetName];
   }
