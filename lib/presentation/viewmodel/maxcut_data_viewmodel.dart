@@ -152,7 +152,8 @@ class MaxCutDataViewModel extends _$MaxCutDataViewModel {
         try {
           final expression = MathNodeExpression.fromString(cellValue).calc(const MathVariableValues({}));
           cellValue = expression.toString();
-        } on CantProcessExpressionException {
+        } on CantProcessExpressionException catch (e) {
+          debugPrint("Error catched on cell ${cell.cellIndex}: $e");
           cellValue = "Unrecognized Formula";
         }
       }
